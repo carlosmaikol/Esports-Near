@@ -12,7 +12,7 @@ export class Tournament {
 
 
 
-  constructor(name: string, description: string, game:string , sDate: string, owner: string,prize: u128) {
+  constructor(name: string, description: string, game:string , sDate: string, owner: string, prize: u128) {
     this.owner = context.sender;
     this.name = name;
     this.description = description;

@@ -15,24 +15,18 @@
 import { context, logging, storage , ContractPromiseBatch, u128 } from 'near-sdk-as';
 import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR,balances } from './models';
 
-//PASOS a seguir (cambiar vitalpoint por usuario)
-//near create-account access.vitalpointai.testnet --masterAccount vitalpointai.testnet
-//near keys access.usuario.testnet
-//crear carpeta .env y colocar .. CONTRACT_NAME=access.youraccountname.testnet
-//gitignore agregar .env
-//npm run build
+
 
 
 
 const contractOwner = context.sender;
 //check
 const allTournamentsLength = allTournaments.length;
-const CONTRACT = 'torneo.kevinhernandez.testnet';
+const CONTRACT = 'final.kevinhernandez.testnet';
 
 
 
 // Creates a new instance of a Tournament and stores it on a PersistentVector
-//Falta por agregar el costo de entrada para el torneo y quiza limite de participantes
 export function cTournament(name: string, description: string, game:string , sDate: string,owner:string,prize: u128): Tournament {
     const newTournament = new Tournament(name,description,game,sDate,owner,prize);
     allTournaments.push(newTournament);
@@ -51,7 +45,7 @@ export function getTournaments(): Tournament[] {
       logging.log('observando: ' +allTournaments[i].name)
       
   }
-  //borrar log despues///////////
+  
   
 
   return data;
@@ -59,8 +53,8 @@ export function getTournaments(): Tournament[] {
 
 // Returns a Tournament (if this exists)
 export function getTournament(tIndex: i32): Tournament {
-  //assert(allTournaments.length < tIndex,'this tournament doesnt exist') 
-  //PREGUNTAR ESTO
+  assert(allTournaments.length > tIndex,'this tournament doesnt exist') 
+
   logging.log(allTournaments.length)
   return allTournaments[tIndex]
   
@@ -76,7 +70,7 @@ export function deleteTournaments(): void {
 
 // Deletes a Tournament (if exists) based on its position on the tournament PersistentVector
 export function deleteTournament(tIndex: i32): bool {
-  assert(allTournaments.length < tIndex,"This tournament doesnt exist")
+  assert(allTournaments.length > tIndex,"This tournament doesnt exist")
   allTournaments.swap_remove(tIndex);
   logging.log('The Tournament has been deleted!');
   return true
@@ -85,7 +79,7 @@ export function deleteTournament(tIndex: i32): bool {
 
 
 
-//OJO ESTO SE PUEDE MEJORAR
+
 export function changeTournamentOwner(tIndex: i32): bool {
   if(allTournaments.length < tIndex) {
        logging.log('This tournament doesnt exist!')
@@ -149,7 +143,7 @@ export function deleteParticipant(tIndex: i32, User: string): Tournament {
   return tournament
 }
 
-export function deleteAllParticipant(tIndex: i32): Tournament {
+export function deleteAllParticipants(tIndex: i32): Tournament {
   let tournament=  getTournament(tIndex)
   logging.log(tournament)
   for(let x = 0; x < tournament.participants.length; x++) {  
