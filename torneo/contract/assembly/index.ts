@@ -22,7 +22,7 @@ import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR,balan
 const contractOwner = context.sender;
 //check
 const allTournamentsLength = allTournaments.length;
-const CONTRACT = 'final.kevinhernandez.testnet';
+const CONTRACT = 'proyecto.kevinhernandez.testnet';
 
 
 
