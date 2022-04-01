@@ -12,8 +12,8 @@
  *
  */
 
-import { context, logging, storage , ContractPromiseBatch } from 'near-sdk-as';
-import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR } from './models';
+import { context, logging, storage , ContractPromiseBatch, u128 } from 'near-sdk-as';
+import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR,balances } from './models';
 
 //PASOS a seguir (cambiar vitalpoint por usuario)
 //near create-account access.vitalpointai.testnet --masterAccount vitalpointai.testnet
@@ -27,15 +27,17 @@ import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR } fro
 const contractOwner = context.sender;
 //check
 const allTournamentsLength = allTournaments.length;
+const CONTRACT = 'torneo.kevinhernandez.testnet';
 
 
 
 // Creates a new instance of a Tournament and stores it on a PersistentVector
 //Falta por agregar el costo de entrada para el torneo y quiza limite de participantes
-export function cTournament(name: string, description: string, game:string , sDate: string): Tournament {
-    const newTournament = new Tournament(name,description,game,sDate);
+export function cTournament(name: string, description: string, game:string , sDate: string,owner:string,prize: u128): Tournament {
+    const newTournament = new Tournament(name,description,game,sDate,owner,prize);
     allTournaments.push(newTournament);
     logging.log('New Tournament created: ' + newTournament.name)
+
     
     return newTournament;
 }
@@ -163,15 +165,27 @@ export function deleteAllParticipant(tIndex: i32): Tournament {
   return tournament
 }
 
-export function PagarEntrada(tIndex: i32, User: string): bool {
+export function PayTicket(tIndex: i32, User: string): bool {
   let tournament=  getTournament(tIndex)
   logging.log(tournament)
   for(let x = 0; x < tournament.participants.length; x++) {  
     if (User == tournament.participants[x].user) {
-      assert(context.attachedDeposit > ONE_NEAR, 'Monto a donar'); 
+      assert(context.attachedDeposit > ONE_NEAR, 'The deposit must be superior to 1 near'); 
+      ContractPromiseBatch.create(CONTRACT).transfer(context.attachedDeposit)
+      tournament.prize = u128.add(tournament.prize,context.attachedDeposit);
+      allTournaments.replace(tIndex,tournament)
       return true
       
     }        
   }
-  return false
+  return false  
+  
+}
+
+export function SendPrize(tIndex: i32,User: string): bool{
+  let tournament=  getTournament(tIndex)
+  assert(u128.le(context.attachedDeposit, tournament.prize), 'attempting to withdraw more than pool has')
+  ContractPromiseBatch.create(User).transfer(context.attachedDeposit)
+  return true
+
 }

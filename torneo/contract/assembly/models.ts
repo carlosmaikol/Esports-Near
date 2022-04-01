@@ -1,4 +1,4 @@
-import { context, PersistentVector, u128,PersistentUnorderedMap } from "near-sdk-as";
+import { context, PersistentVector, u128,PersistentUnorderedMap,PersistentMap } from "near-sdk-as";
 
 @nearBindgen
 export class Tournament {
@@ -8,16 +8,18 @@ export class Tournament {
   game: string;
   sDate: string;
   participants: Array<Participant>;
+  prize: u128;
 
 
 
-  constructor(name: string, description: string, game:string , sDate: string) {
+  constructor(name: string, description: string, game:string , sDate: string, owner: string,prize: u128) {
     this.owner = context.sender;
     this.name = name;
     this.description = description;
     this.game = game;
     this.sDate = sDate;
     this.participants = new Array<Participant>();
+    this.prize = u128.from(0);
  
  }
 } 
@@ -35,3 +37,4 @@ export class Participant {
 export const allTournaments = new PersistentVector<Tournament>("v")
 export const allParticipants = new PersistentVector<Participant>("c")
 export const ONE_NEAR = u128.from('10000000000000000')
+export const balances = new PersistentMap<string, u128>('b')
