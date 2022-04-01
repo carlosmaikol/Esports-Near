@@ -1,100 +1,77 @@
-torneo
-==================
-Test test test 
+# Near Tournament ESPORTS
+---
+Near Tournament ESPORTS es un smart contract que provee un ambiente seguro para el desarrollo de torneos de videojuegos, de esta forma los videojugadores/Streamers/Patrocionadores/Empresas tienen la posibilidad de crear y gestionar torneos de un determinado juego con la finalidad de que los mismos se desarrollen de forma cómoda, organizada, se fomente el ambiente competitivo entre los videojugadores y los mismos puedan recibir algun tipo de reumeneracion o recompensas por su desempeño durante el evento.   
 
+Las funcionalidades implementadas en el contrato son las siguientes:
+* Crear Torneos
+* Visualizar Torneo (Todos o torneo específico por identificador)
+* Eliminar Torneos (Todos o torneo específico por identificador)
+* Agregar participantes al Torneo
+* Eliminar participantes (Todos los participantes del torneo o participante específico por identificador)
+* Pagar al torneo el monto de la entrada de un participante
 
-Quick Start
-===========
+## Cómo utilizar este contrato :question:
+---
+### Pré-requisitos:exclamation:
+1. Debe tener [NodeJs] instalado en su versión 12.0 o mayor.
+2. Debe tener instalado el gestor de dependencia [Yarn]. Para saber si lo tiene, ejecute el comando "yarn --version" en la línea de comandos.
+3. Instale las dependencias de yarn ejecutando "yarn install".
+4. Debe tener una cuenta en la [testnet de NEAR].
+5. Debe tener [NEAR-CLI] instalado de forma global en su equipo. Para saber si ya lo tiene instalado, ejecute el comando "near --version". 
 
-To run this project locally:
+## Instalación :computer:
+---
+1. Clone el presente repositorio con el comando "git clone https://github.com/Megazzoid/Esports-Near"
+2. Vamos a iniciar sesión en nuestra wallet ubicada en la testnet mediante el comando "near login".
+3. Dentro del repositorio del proyecto, instale las dependencias del mismo ejecutando "npm install" (esta operación puede tardar varios minutos)
+4. Para desplegar el contrato y probar sus funciones, ejecute el comando "yarn deploy:dev" esto le devolverá un conjunto de caracteres que empezarán por "dev-" seguido por numeros generados por la red. Guárdelo, lo necesitará si quiere probar los métodos del contrato inteligente.
+5. Finalmente, para ejecutar los tests (si asi lo desea) ejecute el comando "yarn test".
+   
+## Llamadas al Contrato desde NEAR-CLI :memo:
+---
+Algunos de los metodos que podemos ejecutar son los siguientes (sustituye lo marcado en negrita):
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: `npm install`
-3. Run the local development server: `npm run dev` (see `package.json` for a
-   full list of `scripts` you can run with `npm`)
+a. Crear Torneo:
 
-Now you'll have a local development environment backed by the NEAR TestNet!
+near call **Super cuenta de Usuario** cTournament '{"name":"Nombre del torneo","description":"Descripcion del torneo","game":"Juego elegido para el torneo","sDate":"Fecha de Inicio del torneo"}' --accountId **Tu usuario en la testnet**
 
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+b. Visualizar todos los torneos:
 
+near call **Super cuenta de Usuario** getTournaments '{}' --accountId **Tu usuario en la testnet**
 
-Exploring The Code
-==================
+c. Visualizar un torneo específico por Identificador:
 
-1. The "backend" code lives in the `/contract` folder. See the README there for
-   more info.
-2. The frontend code lives in the `/src` folder. `/src/index.html` is a great
-   place to start exploring. Note that it loads in `/src/index.js`, where you
-   can learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See `contract/README` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with `npm
-   run test`.
+near call **Super cuenta de Usuario** getTournament '{"tIndex":0}' --accountId **Tu usuario en la testnet**
 
+d. Eliminar un torneo específico por Identificador:
 
-Deploy
-======
+near call **Super cuenta de Usuario** deleteTournament '{"tIndex":0}' --accountId **Tu usuario en la testnet**
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run `npm run dev`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+e. Eliminar todos los torneos creados:
 
+near call **Super cuenta de Usuario** deleteTournaments '{}' --accountId **Tu usuario en la testnet**
 
-Step 0: Install near-cli (optional)
--------------------------------------
+f. Agregar participantes al torneo (conociendo su identificador):
 
-[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local `node_modules` folder when you ran `npm install`, but for best ergonomics you may want to install it globally:
+near call **Super cuenta de Usuario** addParticipant '{"tIndex": **Número identificador (Debe ser >= 0)**}' --accountId **Tu usuario en la testnet**
 
-    npm install --global near-cli
+g. Eliminar participante específico (conociendo su identificador):
 
-Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`
+near call **Super cuenta de Usuario** deleteParticipant '{"tIndex":0,"User":"kevinhernandez.testnet"}' --accountId **Tu usuario en la testnet**
 
-Ensure that it's installed with `near --version` (or `npx near --version`)
+h. Eliminar todos los participantes:
 
+near call **Super cuenta de Usuario** deleteAllParticipants '{"tIndex":0}' --accountId **Tu usuario en la testnet**
 
-Step 1: Create an account for the contract
-------------------------------------------
+i. Pagar al torneo un determinado monto para la entrada:
 
-Each account on NEAR can have at most one contract deployed to it. If you've already created an account such as `your-name.testnet`, you can deploy your contract to `torneo.your-name.testnet`. Assuming you've already created an account on [NEAR Wallet], here's how to create `torneo.your-name.testnet`:
+near call dev-**Número de contrato** PayTicket '{"tIndex": **Número identificador de usuario**,"User":"**Usuario al que se desea transferir en la testnet**"}' --accountId **Tu usuario en la testnet** --amount **Monto a transferir (expresado en números)**
 
-1. Authorize NEAR CLI, following the commands it gives you:
+## Mockup o boceto elaborado con Figma 🎨
+Abre este [enlace](https://www.figma.com/file/3xnzJcjsMmznXmsj7bs9h4/Untitled?node-id=0%3A1).
 
-      near login
-
-2. Create a subaccount (replace `YOUR-NAME` below with your actual account name):
-
-      near create-account torneo.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
-
-
-Step 2: set contract name in code
----------------------------------
-
-Modify the line in `src/config.js` that sets the account name of the contract. Set it to the account id you used above.
-
-    const CONTRACT_NAME = process.env.CONTRACT_NAME || 'torneo.YOUR-NAME.testnet'
-
-
-Step 3: deploy!
----------------
-
-One command:
-
-    npm run deploy
-
-As you can see in `package.json`, this does two things:
-
-1. builds & deploys smart contract to NEAR TestNet
-2. builds & deploys frontend code to GitHub using [gh-pages]. This will only work if the project already has a repository set up on GitHub. Feel free to modify the `deploy` script in `package.json` to deploy elsewhere.
-
-
-Troubleshooting
-===============
-
-On Windows, if you're seeing an error containing `EPERM` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
-
-
-  [create-near-app]: https://github.com/near/create-near-app
-  [Node.js]: https://nodejs.org/en/download/package-manager/
-  [jest]: https://jestjs.io/
-  [NEAR accounts]: https://docs.near.org/docs/concepts/account
-  [NEAR Wallet]: https://wallet.testnet.near.org/
-  [near-cli]: https://github.com/near/near-cli
-  [gh-pages]: https://github.com/tschaub/gh-pages
+## Autores :thought_balloon:
+- [Carlos Morales](https://github.com/carlosmaikol)
+- [Kevin Han](https://github.com/xapho)
+- [Kevin Hernandez](https://github.com/Megazzoid/)
+- [Luis Gonzalez](https://github.com/ldgonzalezmedina)
