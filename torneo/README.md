@@ -1,7 +1,6 @@
 torneo
 ==================
-
-This app was initialized with [create-near-app]
+Test test test 
 
 
 Quick Start
