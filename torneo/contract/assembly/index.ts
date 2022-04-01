@@ -13,8 +13,7 @@
  */
 
 import { context, logging, storage , ContractPromiseBatch } from 'near-sdk-as';
-import { Tournament, allTournaments, Participant, allParticipants } 
-from './models';
+import { Tournament, allTournaments, Participant, allParticipants,ONE_NEAR } from './models';
 
 //PASOS a seguir (cambiar vitalpoint por usuario)
 //near create-account access.vitalpointai.testnet --masterAccount vitalpointai.testnet
@@ -162,4 +161,17 @@ export function deleteAllParticipant(tIndex: i32): Tournament {
   
       
   return tournament
+}
+
+export function PagarEntrada(tIndex: i32, User: string): bool {
+  let tournament=  getTournament(tIndex)
+  logging.log(tournament)
+  for(let x = 0; x < tournament.participants.length; x++) {  
+    if (User == tournament.participants[x].user) {
+      assert(context.attachedDeposit > ONE_NEAR, 'Monto a donar'); 
+      return true
+      
+    }        
+  }
+  return false
 }

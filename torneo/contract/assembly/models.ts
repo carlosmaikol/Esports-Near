@@ -34,4 +34,4 @@ export class Participant {
 //check
 export const allTournaments = new PersistentVector<Tournament>("v")
 export const allParticipants = new PersistentVector<Participant>("c")
-//export const ONE_NEAR = u128.from('10000000000000000')
+export const ONE_NEAR = u128.from('10000000000000000')
